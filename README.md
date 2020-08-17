@@ -1,6 +1,8 @@
 # ScrapyListCompany
 ListCompany的爬虫项目，用来爬取用户资料
 
+需要爬取的网站：https://www.listcompany.org/Consumer_Electronics_Industry.html
+
 ### 入门资料
 - https://zhuanlan.zhihu.com/p/21479334
 
@@ -12,7 +14,6 @@ ListCompany的爬虫项目，用来爬取用户资料
 首先安装scrapy
 ```
  pip3 install scrapy
-
 ```
 
 生成项目`scrapy startproject ListCompany`
@@ -38,7 +39,6 @@ scrapy crawl company
 from scrapy.cmdline import execute
 
 execute(['scrapy', 'crawl', 'company'])
-
 ```
 
 执行的结果
@@ -52,7 +52,7 @@ User-agent: *
 Disallow: /ajax_check*
 Disallow: /stat.php*
 ```
-这些内容是不让爬的
+说明以上这些内容是不让爬的，当然我们也不是爬的这个，所以并不会违法犯罪，放心操作好了。
 
 
 ### 使用scrapy shell
