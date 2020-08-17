@@ -79,7 +79,7 @@ XPath入门文档：https://www.w3school.com.cn/xpath/index.asp
 
 首先要获取右侧的所有种类链接，这里当然是Chrome浏览器的审查元素
 
-![](https://pic.downk.cc/item/5f3a52e414195aa5949f0855.jpg)
+![](https://pic.downk.cc/item/5f3a666514195aa594a4024e.jpg)
 
 右键其中的一个标签进行检查，可以看到其中的a标签对应的源代码
 ![](https://pic.downk.cc/item/5f3a534714195aa5949f1fd9.jpg)
