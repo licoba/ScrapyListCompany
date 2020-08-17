@@ -162,3 +162,9 @@ response.xpath('//div[@class="all-rgt fr"]/div[@class="the05 border01"]/div[@cla
 
 又有一个新的知识点：CrawlSpider
 
+这里有一篇博客，介绍了下一页、翻页的操作
+https://www.jianshu.com/p/0c957c57ae10
+
+大致思路：利用回调，获取下一页的链接，交给自己进行处理就好了。
+
+
