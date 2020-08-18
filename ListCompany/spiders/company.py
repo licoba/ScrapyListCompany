@@ -41,16 +41,18 @@ class CompanySpider(scrapy.Spider):
         last_btn_link = response.xpath('//div[@class="pagea"]/ul/a[@title="Last"]/@href').extract_first()
         if (last_btn_link):
             max_page = int(last_btn_link.split('.html')[0].split('/p')[1])
-        print('国家 :' + country_name, "，最大页数：", max_page)
+        # print('国家 :' + country_name, "，最大页数：", max_page)
         country_links = self.get_links(response.url, page_count=max_page)
         # print('country_links :', country_links)
         dictionary = {'country': country_name, 'links': country_links}
         self.all_urls.append(dictionary)
+        # f = open('all_urls.json', 'w+')
+        # f.write(json.dumps(self.all_urls))
 
-        f = open('all_urls.json', 'w+')
-        f.write(json.dumps(self.all_urls))
-        # print(self.all_urls)
-
+        # 对每一个国家的country_links 进行访问,访问之后获取到每一个联系人的链接
+        for one_page in country_links:
+            req = scrapy.Request(url=one_page, callback=self.parse_one_page)
+            yield req
         pass
 
     # get all links
@@ -63,6 +65,33 @@ class CompanySpider(scrapy.Spider):
             link_list.append(every_link)
         return link_list
 
-    def parse_right_click_content(self, response):
-        print('处理内容结果 content:-)')
+    def parse_one_page(self, response):
+        # print('处理单页内容')
+        menber_list = response.xpath('//div[@class="the04 border01"]/div/ul/li/h4/a/@href').extract()
+        for one_menber in menber_list:
+            req = scrapy.Request(url=one_menber, callback=self.parse_menber_content)
+            yield req
+        pass
+
+    # https://www.listcompany.org/Shenzhen_Penjoy_Technology_Co_Ltd_Info.html 处理单个人员的返回结果
+    def parse_menber_content(self, response):
+        # print('处理联系人详情')
+        country = response.xpath(
+            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[1]/span/text()').extract_first()
+        address = response.xpath(
+            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[2]/span/text()').extract_first()
+        website = response.xpath(
+            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[4]/span/text()').extract_first()
+
+        contact_person = response.xpath(
+            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[5]/ul/li[1]/span/text()').extract_first()
+        job_title = response.xpath(
+            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[5]/ul/li[3]/span/text()').extract_first()
+
+        # print(country, address, website, contact_person, job_title)
+
+        telephone_path = response.xpath('//div[@class="the09"]/ul/li/strong[contains(text(),"Telephone")]/../span/img/@src').extract_first()
+
+        tel_link = 'https://www.listcompany.org' + str(telephone_path)
+        print(contact_person, tel_link)
         pass
