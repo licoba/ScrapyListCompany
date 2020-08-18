@@ -38,9 +38,9 @@ class CompanySpider(scrapy.Spider):
         # response.xpath('//div[@class="pagea"]/ul/b/text()').extract_first() 只有一页的时候可以用这个获取
         # 下一页的链接是一个分链接 '/Consumer_Electronics_In_Germany/p2.html'
         # 如果没有下一页的链接，会返回空
-        next_btn_link = response.xpath('//div[@class="pagea"]/ul/a[@title="Next"]/@href').extract_first()
-        if (next_btn_link):
-            max_page = int(response.xpath('//div[@class="pagea"]/ul/a[last()-2]/text()').extract_first())
+        last_btn_link = response.xpath('//div[@class="pagea"]/ul/a[@title="Last"]/@href').extract_first()
+        if (last_btn_link):
+            max_page = int(last_btn_link.split('.html')[0].split('/p')[1])
         print('国家 :' + country_name, "，最大页数：", max_page)
         country_links = self.get_links(response.url, page_count=max_page)
         # print('country_links :', country_links)
