@@ -12,6 +12,7 @@ class ListcompanyItem(scrapy.Item):
     country = scrapy.Field()
     address = scrapy.Field()
     website = scrapy.Field()
+    business_type = scrapy.Field()
     contact_person = scrapy.Field()
     job_title = scrapy.Field()
     tel_link = scrapy.Field()

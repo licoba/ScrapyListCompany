@@ -82,18 +82,15 @@ class CompanySpider(scrapy.Spider):
         address = response.xpath(
             '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[2]/span/text()').extract_first().replace(u'\xa0',
                                                                                                               u' ')
-        website = response.xpath(
-            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[4]/span/text()').extract_first()
-
+        website = response.xpath('//div[@class="the09"]/ul/li/strong[contains(text(),"Website")]/../span/text()').extract_first()
+        business_type = response.xpath('//div[@class="the09"]/ul/li/strong[contains(text(),"Business")]/../span/text()').extract_first()
         contact_person = response.xpath(
             '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[5]/ul/li[1]/span/text()').extract_first()
-        job_title = response.xpath(
-            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[5]/ul/li[3]/span/text()').extract_first()
+        job_title = response.xpath('//div[@class="the09"]/ul/li/strong[contains(text(),"Job")]/../span/text()').extract_first()
 
         # print(country, address, website, contact_person, job_title)
 
-        telephone_path = response.xpath(
-            '//div[@class="the09"]/ul/li/strong[contains(text(),"Telephone")]/../span/img/@src').extract_first()
+        telephone_path = response.xpath('//div[@class="the09"]/ul/li/strong[contains(text(),"Telephone")]/../span/img/@src').extract_first()
 
         tel_link = 'https://www.listcompany.org' + str(telephone_path)
         # print(contact_person, tel_link)
@@ -101,6 +98,7 @@ class CompanySpider(scrapy.Spider):
         item['country'] = country
         item['address'] = address
         item['website'] = website
+        item['business_type'] = business_type
         item['contact_person'] = contact_person
         item['job_title'] = job_title
         item['tel_link'] = tel_link
