@@ -1,5 +1,6 @@
 import scrapy
 import json
+from ListCompany.items import ListcompanyItem
 
 
 class CompanySpider(scrapy.Spider):
@@ -79,7 +80,8 @@ class CompanySpider(scrapy.Spider):
         country = response.xpath(
             '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[1]/span/text()').extract_first()
         address = response.xpath(
-            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[2]/span/text()').extract_first()
+            '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[2]/span/text()').extract_first().replace(u'\xa0',
+                                                                                                              u' ')
         website = response.xpath(
             '/html/body/div[1]/div[3]/div/div[1]/div[1]/div[4]/ul/li[4]/span/text()').extract_first()
 
@@ -90,8 +92,17 @@ class CompanySpider(scrapy.Spider):
 
         # print(country, address, website, contact_person, job_title)
 
-        telephone_path = response.xpath('//div[@class="the09"]/ul/li/strong[contains(text(),"Telephone")]/../span/img/@src').extract_first()
+        telephone_path = response.xpath(
+            '//div[@class="the09"]/ul/li/strong[contains(text(),"Telephone")]/../span/img/@src').extract_first()
 
         tel_link = 'https://www.listcompany.org' + str(telephone_path)
-        print(contact_person, tel_link)
+        # print(contact_person, tel_link)
+        item = ListcompanyItem()
+        item['country'] = country
+        item['address'] = address
+        item['website'] = website
+        item['contact_person'] = contact_person
+        item['job_title'] = job_title
+        item['tel_link'] = tel_link
+        yield item
         pass
