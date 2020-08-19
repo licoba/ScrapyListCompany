@@ -11,6 +11,7 @@ import os
 import numpy as np
 import csv
 
+
 def download_image(url, our_dir, index):
     '''
     根据url下载图片
@@ -82,12 +83,30 @@ def download_image_thread(url_list, our_dir, num_processes, remove_bad=False, As
     return image_list
 
 
+# 遍历文件夹
+def walkFile(file):
+    count = 0
+    for root, dirs, files in os.walk(file):
+        # root 表示当前正在访问的文件夹路径
+        # dirs 表示该文件夹下的子目录名list
+        # files 表示该文件夹下的文件list
+
+        # 遍历文件
+        for f in files:
+            count += 1
+            # print(os.path.join(root, f))
+
+        # 遍历所有的文件夹
+        for d in dirs:
+            print(os.path.join(root, d))
+    print("文件数量一共为:", count)
+
+
 if __name__ == "__main__":
     our_dir = "./phone_images"
-    url_list = ["https://www.listcompany.org/phone-1-1458257.png",
-                "https://www.listcompany.org/phone-1-1446113.png",
-                "https://www.listcompany.org/phone-1-1447152.png",
-                "https://www.listcompany.org/phone-1-1412055.png"]
+    url_list = ['https://www.listcompany.org/phone-1-987308.png', 'https://www.listcompany.org/phone-1-1538489.png',
+                'https://www.listcompany.org/phone-1-1385051.png', 'https://www.listcompany.org/phone-1-1629371.png',
+                'https://www.listcompany.org/phone-1-1800439.png']
 
     print('从csv读取telphone图片链接list')
     # 打开csv文件, 读取联系方式这一列
@@ -96,11 +115,31 @@ if __name__ == "__main__":
         column = [row[6] for row in reader]
     # print(column)
     del (column[0])
-    print('共读到', len(column), '个数据')
+    print('原始csv共读到', len(column), '个数据')
     url_list = column
 
-    # startTime = time.time()
-    # image_list = download_image_thread(url_list, our_dir=our_dir, num_processes=64, remove_bad=True, Async=True)
-    # endTime = time.time()
-    # consumeTime = endTime - startTime
-    # print("程序运行时间：" + str(consumeTime) + " 秒")
+    download_list = os.listdir('phone_images')
+    print('图片文件夹共读到', len(download_list), '个数据')
+
+    # walkFile('phone_images')
+    # for index, item in enumerate(download_list):
+    #     item = 'https://www.listcompany.org/' + item
+    #     download_list[index] = item
+
+    # print(download_list)
+
+    # a = url_list
+    # b = download_list
+    # c = [x for x in a if x in b]
+    # d = [y for y in (a + b) if y not in c]
+    # # 列表去重
+    # d = list(set(d))
+    # d.remove('https://www.listcompany.orgNone')
+    # print(d)
+    # print('共有', len(d), '个重复的元素')
+
+    startTime = time.time()
+    image_list = download_image_thread(url_list, our_dir=our_dir, num_processes=5, remove_bad=True, Async=True)
+    endTime = time.time()
+    consumeTime = endTime - startTime
+    print("程序运行时间：" + str(consumeTime) + " 秒")
