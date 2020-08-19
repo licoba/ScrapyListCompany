@@ -9,7 +9,7 @@ from multiprocessing.pool import ThreadPool
 import requests
 import os
 import numpy as np
-
+import csv
 
 def download_image(url, our_dir, index):
     '''
@@ -60,11 +60,12 @@ def download_image_thread(url_list, our_dir, num_processes, remove_bad=False, As
     pool = ThreadPool(processes=num_processes)
     thread_list = []
     for index, image_url in enumerate(url_list):
-        if Async:
-            out = pool.apply_async(func=download_image, args=(image_url, our_dir, index))  # 异步
-        else:
-            out = pool.apply(func=download_image, args=(image_url, our_dir, index))  # 同步
-        thread_list.append(out)
+        if 'orgNone' not in image_url:
+            if Async:
+                out = pool.apply_async(func=download_image, args=(image_url, our_dir, index))  # 异步
+            else:
+                out = pool.apply(func=download_image, args=(image_url, our_dir, index))  # 同步
+            thread_list.append(out)
 
     pool.close()
     pool.join()
@@ -87,9 +88,19 @@ if __name__ == "__main__":
                 "https://www.listcompany.org/phone-1-1446113.png",
                 "https://www.listcompany.org/phone-1-1447152.png",
                 "https://www.listcompany.org/phone-1-1412055.png"]
-    startTime = time.time()
-    image_list = download_image_thread(url_list, our_dir=our_dir, num_processes=4, remove_bad=True, Async=True)
-    endTime = time.time()
-    consumeTime = endTime - startTime
-    print("程序运行时间：" + str(consumeTime) + " 秒")
-    # print(image_list)
+
+    print('从csv读取telphone图片链接list')
+    # 打开csv文件, 读取联系方式这一列
+    with open('contacts.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        column = [row[6] for row in reader]
+    # print(column)
+    del (column[0])
+    print('共读到', len(column), '个数据')
+    url_list = column
+
+    # startTime = time.time()
+    # image_list = download_image_thread(url_list, our_dir=our_dir, num_processes=64, remove_bad=True, Async=True)
+    # endTime = time.time()
+    # consumeTime = endTime - startTime
+    # print("程序运行时间：" + str(consumeTime) + " 秒")
